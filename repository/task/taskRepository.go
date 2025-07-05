@@ -1,4 +1,4 @@
-package repository
+package task
 
 import (
 	"Yattask/model"
@@ -7,7 +7,7 @@ import (
 )
 
 type TaskRepository interface {
-	Create(ctx context.Context, tx *gorm.Tx, task model.Task) (model.Task, error)
+	Create(ctx context.Context, tx *gorm.DB, task model.Task) (model.Task, error)
 	Update(ctx context.Context, tx *gorm.DB, task model.Task) (model.Task, error)
 	Delete(ctx context.Context, tx *gorm.DB, task model.Task) error
 	GetById(ctx context.Context, tx *gorm.DB, taskId int) (model.Task, error)
