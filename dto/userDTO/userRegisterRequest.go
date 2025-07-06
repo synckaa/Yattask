@@ -1,4 +1,4 @@
-package user
+package userDTO
 
 type UserRegisterRequest struct {
 	Username string `json:"username" form:"username" binding:"required"`

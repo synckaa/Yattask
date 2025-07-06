@@ -1,4 +1,4 @@
-package user
+package userDTO
 
 import "gorm.io/gorm"
 

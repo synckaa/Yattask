@@ -1,4 +1,4 @@
-package user
+package userRepository
 
 import (
 	"Yattask/model"
@@ -11,5 +11,5 @@ type UserRepository interface {
 	Update(ctx context.Context, tx *gorm.DB, user model.User) (model.User, error)
 	GetById(ctx context.Context, tx *gorm.DB, userId int) (model.User, error)
 	GetByUsername(ctx context.Context, tx *gorm.DB, username string) (model.User, error)
-	GetTag
+	GetbyIdWithTaskAndTag(ctx context.Context, tx *gorm.DB, userId int) (model.User, error)
 }
