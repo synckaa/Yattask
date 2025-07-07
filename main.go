@@ -2,19 +2,34 @@ package main
 
 import (
 	"Yattask/config"
+	"Yattask/controller/userControllers"
+	"Yattask/middleware"
+	"Yattask/repository/userRepositories"
+	"Yattask/service/userServices"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
-func main() {
+func init() {
 	config.LoadEnv()
-	db := config.GetConnDB()
-	config.SyncTables(db)
-	r := gin.Default()
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Hello World!",
-		})
-	})
+	config.GetConnDB()
+	config.SyncTables(config.DB)
+}
 
-	r.Run()
+func main() {
+	validate := validator.New()
+	repo := userRepositories.NewUserRepository()
+	Service := userServices.NewUserService(config.DB, repo, validate)
+	Controller := userControllers.NewUserController(Service)
+
+	r := gin.Default()
+	r.POST("/register", Controller.Register)
+	r.POST("/login", Controller.Login)
+	r.GET("/dashboard", middleware.AuthMiddleware, Controller.GetProfile)
+	r.POST("/logout", Controller.Logout)
+
+	err := r.Run()
+	if err != nil {
+		return
+	}
 }

@@ -7,8 +7,17 @@ import (
 
 func ToUserServiceResponse(user model.User) userDTO.UserServiceResponse {
 	return userDTO.UserServiceResponse{
+		Model:    user.Model,
 		Username: user.Username,
-		Password: user.Password,
 	}
 
+}
+
+func ToUserServiceResponseWithTaskTag(user model.User) userDTO.UserServiceResponseGETWithTaskTag {
+	return userDTO.UserServiceResponseGETWithTaskTag{
+		Model:    user.Model,
+		Username: user.Username,
+		Tasks:    user.Tasks,
+		Tags:     user.Tags,
+	}
 }

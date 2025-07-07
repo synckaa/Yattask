@@ -8,9 +8,12 @@ import (
 	"os"
 )
 
-func GetConnDB() *gorm.DB {
+var DB *gorm.DB
+
+func GetConnDB() {
+	var err error
 	dsn := os.Getenv("DB")
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			TablePrefix: "public.",
 		},
@@ -19,5 +22,5 @@ func GetConnDB() *gorm.DB {
 	if err != nil {
 		panic("failed to connect database")
 	}
-	return db
+
 }
