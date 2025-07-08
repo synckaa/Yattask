@@ -1,4 +1,4 @@
-package task
+package taskRepositories
 
 import (
 	"Yattask/model"
@@ -7,6 +7,10 @@ import (
 )
 
 type TaskRepositoryImpl struct {
+}
+
+func NewTaskRepository() TaskRepository {
+	return &TaskRepositoryImpl{}
 }
 
 func (t TaskRepositoryImpl) Create(ctx context.Context, tx *gorm.DB, task model.Task) (model.Task, error) {
@@ -33,7 +37,7 @@ func (t TaskRepositoryImpl) Delete(ctx context.Context, tx *gorm.DB, task model.
 	return nil
 }
 
-func (t TaskRepositoryImpl) GetById(ctx context.Context, tx *gorm.DB, taskId int) (model.Task, error) {
+func (t TaskRepositoryImpl) GetByIdWithTags(ctx context.Context, tx *gorm.DB, taskId int) (model.Task, error) {
 	var task model.Task
 	err := tx.WithContext(ctx).Where("id = ?", taskId).Take(&task).Error
 	if err != nil {

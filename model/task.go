@@ -8,7 +8,7 @@ type Task struct {
 	Title       string `json:"title" gorm:"column:title"`
 	Deadline    string `json:"deadline" gorm:"column:deadline"`
 	Description string `json:"description" gorm:"column:description"`
-	Status      uint   `json:"status" gorm:"column:status"`
+	Status      bool   `json:"status" gorm:"column:status"`
 	Tags        []Tag  `json:"tags" gorm:"many2many:tasks_tags;foreignKey:id;joinForeignKey:task_id;references:id;joinReferences:tag_id"`
 }
 

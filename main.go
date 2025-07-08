@@ -2,9 +2,12 @@ package main
 
 import (
 	"Yattask/config"
+	"Yattask/controller/taskControllers"
 	"Yattask/controller/userControllers"
 	"Yattask/middleware"
+	"Yattask/repository/taskRepositories"
 	"Yattask/repository/userRepositories"
+	"Yattask/service/taskServices"
 	"Yattask/service/userServices"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -21,12 +24,16 @@ func main() {
 	repo := userRepositories.NewUserRepository()
 	Service := userServices.NewUserService(config.DB, repo, validate)
 	Controller := userControllers.NewUserController(Service)
+	taskRepo := taskRepositories.NewTaskRepository()
+	taskService := taskServices.NewTaskService(config.DB, taskRepo, validate)
+	taskControllers := taskControllers.NewTaskController(taskService)
 
 	r := gin.Default()
 	r.POST("/register", Controller.Register)
 	r.POST("/login", Controller.Login)
 	r.GET("/dashboard", middleware.AuthMiddleware, Controller.GetProfile)
 	r.POST("/logout", Controller.Logout)
+	r.POST("/task", middleware.AuthMiddleware, taskControllers.Create)
 
 	err := r.Run()
 	if err != nil {
