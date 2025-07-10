@@ -49,7 +49,7 @@ func (u UserRepositoryImpl) GetByUsername(ctx context.Context, tx *gorm.DB, user
 
 func (u UserRepositoryImpl) GetByIdWithTaskAndTag(ctx context.Context, tx *gorm.DB, userId uint) (model.User, error) {
 	var user model.User
-	err := tx.WithContext(ctx).Preload("Tasks").Preload("Tags").Where("id = ?", userId).Take(&user).Error
+	err := tx.WithContext(ctx).Preload("Tasks.Tags").Preload("Tags").Where("id = ?", userId).Take(&user).Error
 	if err != nil {
 		return model.User{}, err
 	}

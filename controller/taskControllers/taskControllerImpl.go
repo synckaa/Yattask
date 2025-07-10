@@ -1,6 +1,7 @@
 package taskControllers
 
 import (
+	"Yattask/dto"
 	"Yattask/dto/taskDTO"
 	"Yattask/model"
 	"Yattask/service/taskServices"
@@ -24,9 +25,10 @@ func (t TaskControlerImpl) Create(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "failed to binding"})
 	}
-	user := c.MustGet("user").(model.User)
+	user, _ := c.Get("user")
+	userId := user.(model.User).ID
 	taskReq := taskDTO.TaskCreateUpdateRequest{
-		UserID:      user.ID,
+		UserID:      userId,
 		Title:       task.Title,
 		Deadline:    task.Deadline,
 		Description: task.Description,
@@ -37,6 +39,12 @@ func (t TaskControlerImpl) Create(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "failed to create"})
 	}
-	c.JSON(http.StatusCreated, taskResp)
+
+	response := dto.WebStandardResponse{
+		Code:    http.StatusCreated,
+		Status:  "task created",
+		Message: taskResp,
+	}
+	c.JSON(http.StatusCreated, response)
 
 }

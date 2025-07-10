@@ -5,6 +5,7 @@ import (
 	"Yattask/controller/taskControllers"
 	"Yattask/controller/userControllers"
 	"Yattask/middleware"
+	"Yattask/repository/tagRepositories"
 	"Yattask/repository/taskRepositories"
 	"Yattask/repository/userRepositories"
 	"Yattask/service/taskServices"
@@ -24,16 +25,17 @@ func main() {
 	repo := userRepositories.NewUserRepository()
 	Service := userServices.NewUserService(config.DB, repo, validate)
 	Controller := userControllers.NewUserController(Service)
+	tagRepository := tagRepositories.NewTagRepository()
 	taskRepo := taskRepositories.NewTaskRepository()
-	taskService := taskServices.NewTaskService(config.DB, taskRepo, validate)
-	taskControllers := taskControllers.NewTaskController(taskService)
+	taskService := taskServices.NewTaskService(config.DB, taskRepo, tagRepository, validate)
+	myTaskControllers := taskControllers.NewTaskController(taskService)
 
 	r := gin.Default()
 	r.POST("/register", Controller.Register)
 	r.POST("/login", Controller.Login)
 	r.GET("/dashboard", middleware.AuthMiddleware, Controller.GetProfile)
 	r.POST("/logout", Controller.Logout)
-	r.POST("/task", middleware.AuthMiddleware, taskControllers.Create)
+	r.POST("/task", middleware.AuthMiddleware, myTaskControllers.Create)
 
 	err := r.Run()
 	if err != nil {

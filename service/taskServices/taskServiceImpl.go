@@ -4,6 +4,7 @@ import (
 	"Yattask/dto/taskDTO"
 	"Yattask/helper"
 	"Yattask/model"
+	"Yattask/repository/tagRepositories"
 	"Yattask/repository/taskRepositories"
 	"context"
 	"github.com/go-playground/validator/v10"
@@ -13,13 +14,15 @@ import (
 type TaskServiceImpl struct {
 	DB       *gorm.DB
 	Repo     taskRepositories.TaskRepository
+	tagRepo  tagRepositories.TagRepository
 	Validate *validator.Validate
 }
 
-func NewTaskService(db *gorm.DB, repo taskRepositories.TaskRepository, validate *validator.Validate) TaskService {
+func NewTaskService(db *gorm.DB, repo taskRepositories.TaskRepository, tagRepo tagRepositories.TagRepository, validate *validator.Validate) TaskService {
 	return &TaskServiceImpl{
 		DB:       db,
 		Repo:     repo,
+		tagRepo:  tagRepo,
 		Validate: validate,
 	}
 }
@@ -35,10 +38,17 @@ func (t TaskServiceImpl) Create(ctx context.Context, task taskDTO.TaskCreateUpda
 		Deadline:    task.Deadline,
 		Description: task.Description,
 		Status:      task.Status,
-		Tags:        task.Tags,
 	}
 	var taskResp model.Task
 	errTX := t.DB.Transaction(func(tx *gorm.DB) error {
+		for _, tagName := range task.Tags {
+			tag, err := t.tagRepo.FindByName(ctx, tx, tagName.Name, task.UserID)
+			if err != nil {
+				return err
+			}
+			taskReq.Tags = append(taskReq.Tags, tag)
+
+		}
 		createdTask, err := t.Repo.Create(ctx, tx, taskReq)
 		if err != nil {
 			return err

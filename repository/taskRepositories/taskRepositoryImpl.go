@@ -18,7 +18,13 @@ func (t TaskRepositoryImpl) Create(ctx context.Context, tx *gorm.DB, task model.
 	if err != nil {
 		return model.Task{}, err
 	}
-	return task, nil
+	var createdTask model.Task
+	err = tx.WithContext(ctx).Preload("Tags").Take(&createdTask, task.ID).Error
+	if err != nil {
+		return model.Task{}, err
+	}
+
+	return createdTask, nil
 }
 
 func (t TaskRepositoryImpl) Update(ctx context.Context, tx *gorm.DB, task model.Task) (model.Task, error) {
