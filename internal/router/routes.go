@@ -12,6 +12,7 @@ func AllRoutes(userController userControllers.UserController, taskController tas
 	api := r.Group("/api", middleware.AuthMiddleware)
 	api.GET("/dashboard", userController.GetProfile)
 	api.POST("/task", taskController.Create)
+	api.POST("/taskai", taskController.CreateWithAI)
 	api.PUT("/task/:id", taskController.Update)
 	api.DELETE("/task/:id", taskController.Delete)
 

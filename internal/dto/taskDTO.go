@@ -39,6 +39,9 @@ type TaskWebCreateRequest struct {
 	Status      bool     `json:"status"`
 	Tags        []string `json:"tags"`
 }
+type TaskWebCreateRequestWithAI struct {
+	Message string `json:"message" form:"message" binding:"required"`
+}
 
 type TaskWebUpdateRequest struct {
 	Title       string   `json:"title"`
