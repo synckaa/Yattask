@@ -40,7 +40,7 @@ func (t TaskRepositoryImpl) Update(ctx context.Context, tx *gorm.DB, task entiti
 
 func (t TaskRepositoryImpl) Delete(ctx context.Context, tx *gorm.DB, taskId uint, userId uint) error {
 
-	result := tx.WithContext(ctx).Where("id = ? AND user_id = ?", taskId, userId).Delete(&entities.Task{})
+	result := tx.WithContext(ctx).Where("id = ? AND user_id = ?", taskId, userId).Unscoped().Delete(&entities.Task{})
 	if result.RowsAffected == 0 {
 		return errors.New("task not found")
 	}

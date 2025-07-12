@@ -94,8 +94,9 @@ func (t TaskControlerImpl) Delete(c *gin.Context) {
 		return
 	}
 	response := common.WebStandardResponse{
-		Code:   http.StatusOK,
-		Status: "task deleted",
+		Code:    http.StatusOK,
+		Status:  "success",
+		Message: "successfully deleted",
 	}
 	c.JSON(http.StatusOK, response)
 }

@@ -11,7 +11,7 @@ type Task struct {
 	Deadline    string `json:"deadline" gorm:"column:deadline"`
 	Description string `json:"description" gorm:"column:description"`
 	Status      bool   `json:"status" gorm:"column:status"`
-	Tags        []Tag  `json:"tags" gorm:"many2many:tasks_tags;foreignKey:id;joinForeignKey:task_id;references:id;joinReferences:tag_id"`
+	Tags        []Tag  `json:"tags" gorm:"many2many:tasks_tags;foreignKey:id;joinForeignKey:task_id;references:id;joinReferences:tag_id;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func (t *Task) TableName() string {

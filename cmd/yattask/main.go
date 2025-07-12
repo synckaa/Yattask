@@ -1,16 +1,16 @@
 package main
 
+import "C"
 import (
 	"Yattask/configs"
 	"Yattask/internal/controller/taskControllers"
 	"Yattask/internal/controller/userControllers"
-	"Yattask/internal/middleware"
 	"Yattask/internal/repository/tagrepositories"
 	"Yattask/internal/repository/taskrepositories"
 	"Yattask/internal/repository/userrepositories"
+	"Yattask/internal/router"
 	"Yattask/internal/service/taskservices"
 	"Yattask/internal/service/userservices"
-	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -22,22 +22,15 @@ func init() {
 
 func main() {
 	validate := validator.New()
-	repo := userrepositories.NewUserRepository()
-	Service := userservices.NewUserService(configs.DB, repo, validate)
-	Controller := userControllers.NewUserController(Service)
-	tagRepository := tagrepositories.NewTagRepository()
-	taskRepo := taskrepositories.NewTaskRepository()
-	taskService := taskservices.NewTaskService(configs.DB, taskRepo, tagRepository, validate)
-	myTaskControllers := taskControllers.NewTaskController(taskService)
+	MyUserRepo := userrepositories.NewUserRepository()
+	MyUserService := userservices.NewUserService(configs.DB, MyUserRepo, validate)
+	MyUserController := userControllers.NewUserController(MyUserService)
+	MyTagRepo := tagrepositories.NewTagRepository()
+	MyTaskRepo := taskrepositories.NewTaskRepository()
+	MyTaskService := taskservices.NewTaskService(configs.DB, MyTaskRepo, MyTagRepo, validate)
+	MyTaskControllers := taskControllers.NewTaskController(MyTaskService)
 
-	r := gin.Default()
-	r.POST("/register", Controller.Register)
-	r.POST("/login", Controller.Login)
-	r.GET("/dashboard", middleware.AuthMiddleware, Controller.GetProfile)
-	r.POST("/logout", Controller.Logout)
-	r.POST("/task", middleware.AuthMiddleware, myTaskControllers.Create)
-	r.PUT("/task/:id", middleware.AuthMiddleware, myTaskControllers.Update)
-	r.DELETE("/task/:id", middleware.AuthMiddleware, myTaskControllers.Delete)
+	r := router.AllRoutes(MyUserController, MyTaskControllers)
 
 	err := r.Run()
 	if err != nil {
