@@ -16,12 +16,12 @@ type UserRegisterRequest struct {
 
 type UserServiceResponseGETWithTaskTag struct {
 	gorm.Model
-	Username string                 `json:"username" gorm:"column:username;unique"`
+	Username string                 `json:"username"`
 	Tasks    []TaskWithTagsResponse `json:"tasks"`
 	Tags     []string               `json:"tags"`
 }
 
 type UserServiceResponse struct {
 	gorm.Model
-	Username string `json:"username" form:"username" binding:"required"`
+	Username string `json:"username"`
 }

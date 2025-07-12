@@ -9,4 +9,5 @@ import (
 type TagRepository interface {
 	FindByName(ctx context.Context, tx *gorm.DB, name string, userId uint) (entities.Tag, error)
 	Create(ctx context.Context, tx *gorm.DB, tag entities.Tag) (entities.Tag, error)
+	Delete(ctx context.Context, tx *gorm.DB, userId uint) error
 }

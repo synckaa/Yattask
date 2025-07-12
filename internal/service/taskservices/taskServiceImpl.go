@@ -111,6 +111,10 @@ func (t TaskServiceImpl) Delete(ctx context.Context, taskID uint, userId uint) e
 		if err != nil {
 			return err
 		}
+		err = t.tagRepo.Delete(ctx, tx, userId)
+		if err != nil {
+			return err
+		}
 		return nil
 	})
 	if errTx != nil {

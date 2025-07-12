@@ -34,3 +34,30 @@ func (t *TagRepositoryImpl) Create(ctx context.Context, tx *gorm.DB, tag entitie
 	}
 	return tag, nil
 }
+
+func (t *TagRepositoryImpl) Delete(ctx context.Context, tx *gorm.DB, userId uint) error {
+	subQuery := tx.
+		WithContext(ctx).
+		Table("tasks_tags AS tt").
+		Joins("JOIN tasks t ON t.id = tt.task_id AND t.deleted_at IS NULL").
+		Select("DISTINCT tt.tag_id")
+
+	var unusedTags []entities.Tag
+	err := tx.
+		WithContext(ctx).
+		Where("user_id = ?", userId).
+		Where("id NOT IN (?)", subQuery).
+		Find(&unusedTags).Error
+
+	if err != nil {
+		return err
+	}
+
+	for _, tag := range unusedTags {
+		if err := tx.WithContext(ctx).Delete(&tag).Error; err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

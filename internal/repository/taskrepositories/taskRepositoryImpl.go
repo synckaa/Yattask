@@ -47,7 +47,5 @@ func (t TaskRepositoryImpl) Delete(ctx context.Context, tx *gorm.DB, taskId uint
 	if result.Error != nil {
 		return result.Error
 	}
-	var tag entities.Tag
-	tx.WithContext(ctx).Where("id = ?", taskId).Take(&tag)
 	return nil
 }
