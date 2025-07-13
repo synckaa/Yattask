@@ -5,8 +5,6 @@ import (
 	"Yattask/internal/controller/usercontrollers"
 	"Yattask/internal/middleware"
 	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func AllRoutes(userController usercontrollers.UserController, taskController taskcontrollers.TaskController) *gin.Engine {
@@ -23,6 +21,5 @@ func AllRoutes(userController usercontrollers.UserController, taskController tas
 	auth.POST("/login", userController.Login)
 	auth.POST("/logout", userController.Logout)
 
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return r
 }
