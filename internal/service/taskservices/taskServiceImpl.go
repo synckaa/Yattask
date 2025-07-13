@@ -74,28 +74,41 @@ func (t TaskServiceImpl) Update(ctx context.Context, task dto.TaskUpdateRequest)
 	if err != nil {
 		return dto.TaskServiceResponse{}, err
 	}
-	taskReq := entities.Task{
-		UserID:      task.UserID,
-		Title:       task.Title,
-		Deadline:    task.Deadline,
-		Description: task.Description,
-		Status:      task.Status,
-	}
-	taskReq.ID = task.ID
 	var taskResp entities.Task
 	errTX := t.DB.Transaction(func(tx *gorm.DB) error {
+		existingTask, err := t.Repo.GetById(ctx, tx, task.ID, task.UserID)
+		if err != nil {
+			return err
+		}
+		existingTask.ID = task.ID
+		existingTask.Title = task.Title
+		existingTask.Deadline = task.Deadline
+		existingTask.Description = task.Description
+		existingTask.Status = task.Status
+
+		_, err = t.Repo.Update(ctx, tx, existingTask)
+		if err != nil {
+			return err
+		}
+		var tags []entities.Tag
 		for _, tagName := range task.Tags {
 			tag, err := t.tagRepo.FindByName(ctx, tx, tagName, task.UserID)
 			if err != nil {
 				return err
 			}
-			taskReq.Tags = append(taskReq.Tags, tag)
+			tags = append(tags, tag)
 		}
-		updatedTask, err := t.Repo.Update(ctx, tx, taskReq)
+		err = t.tagRepo.Update(ctx, tx, existingTask, tags)
 		if err != nil {
 			return err
 		}
-		taskResp = updatedTask
+
+		taskResp, err = t.Repo.GetByIdWithTags(ctx, tx, existingTask.ID, existingTask.UserID)
+		if err != nil {
+			return err
+		}
+
+		err = t.tagRepo.Delete(ctx, tx, taskResp.UserID)
 		return nil
 	})
 	if errTX != nil {

@@ -28,7 +28,7 @@ func (t *TagRepositoryImpl) FindByName(ctx context.Context, tx *gorm.DB, name st
 }
 
 func (t *TagRepositoryImpl) Create(ctx context.Context, tx *gorm.DB, tag entities.Tag) (entities.Tag, error) {
-	err := tx.WithContext(ctx).Create(&tag).Error
+	err := tx.WithContext(ctx).FirstOrCreate(&tag).Error
 	if err != nil {
 		return entities.Tag{}, err
 	}
@@ -54,10 +54,18 @@ func (t *TagRepositoryImpl) Delete(ctx context.Context, tx *gorm.DB, userId uint
 	}
 
 	for _, tag := range unusedTags {
-		if err := tx.WithContext(ctx).Delete(&tag).Error; err != nil {
+		if err := tx.WithContext(ctx).Unscoped().Delete(&tag).Error; err != nil {
 			return err
 		}
 	}
 
+	return nil
+}
+
+func (t *TagRepositoryImpl) Update(ctx context.Context, tx *gorm.DB, task entities.Task, tags []entities.Tag) error {
+	err := tx.Model(&task).Association("Tags").Replace(tags)
+	if err != nil {
+		return err
+	}
 	return nil
 }

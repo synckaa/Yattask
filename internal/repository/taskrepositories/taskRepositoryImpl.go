@@ -49,3 +49,21 @@ func (t TaskRepositoryImpl) Delete(ctx context.Context, tx *gorm.DB, taskId uint
 	}
 	return nil
 }
+
+func (t TaskRepositoryImpl) GetById(ctx context.Context, tx *gorm.DB, taskId uint, userId uint) (entities.Task, error) {
+	var task entities.Task
+	err := tx.WithContext(ctx).Where("id = ? AND user_id = ?", taskId, userId).Take(&task).Error
+	if err != nil {
+		return entities.Task{}, err
+	}
+	return task, nil
+}
+
+func (t TaskRepositoryImpl) GetByIdWithTags(ctx context.Context, tx *gorm.DB, taskId uint, userId uint) (entities.Task, error) {
+	var task entities.Task
+	err := tx.WithContext(ctx).Preload("Tags").Where("id = ? AND user_id = ?", taskId, userId).Take(&task).Error
+	if err != nil {
+		return entities.Task{}, err
+	}
+	return task, nil
+}
