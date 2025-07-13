@@ -1,13 +1,15 @@
 package router
 
 import (
-	"Yattask/internal/controller/taskControllers"
-	"Yattask/internal/controller/userControllers"
+	"Yattask/internal/controller/taskcontrollers"
+	"Yattask/internal/controller/usercontrollers"
 	"Yattask/internal/middleware"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func AllRoutes(userController userControllers.UserController, taskController taskControllers.TaskController) *gin.Engine {
+func AllRoutes(userController usercontrollers.UserController, taskController taskcontrollers.TaskController) *gin.Engine {
 	r := gin.Default()
 	api := r.Group("/api", middleware.AuthMiddleware)
 	api.GET("/dashboard", userController.GetProfile)
@@ -21,5 +23,6 @@ func AllRoutes(userController userControllers.UserController, taskController tas
 	auth.POST("/login", userController.Login)
 	auth.POST("/logout", userController.Logout)
 
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return r
 }

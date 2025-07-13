@@ -1,4 +1,4 @@
-package taskControllers
+package taskcontrollers
 
 import "github.com/gin-gonic/gin"
 

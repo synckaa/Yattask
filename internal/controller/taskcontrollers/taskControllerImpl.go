@@ -1,4 +1,4 @@
-package taskControllers
+package taskcontrollers
 
 import (
 	"Yattask/internal/common"

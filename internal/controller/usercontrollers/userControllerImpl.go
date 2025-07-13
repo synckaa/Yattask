@@ -1,4 +1,4 @@
-package userControllers
+package usercontrollers
 
 import (
 	"Yattask/internal/common"

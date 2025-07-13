@@ -4,8 +4,8 @@
 package di
 
 import (
-	"Yattask/internal/controller/taskControllers"
-	"Yattask/internal/controller/userControllers"
+	"Yattask/internal/controller/taskcontrollers"
+	"Yattask/internal/controller/usercontrollers"
 	"Yattask/internal/repository/tagrepositories"
 	"Yattask/internal/repository/taskrepositories"
 	"Yattask/internal/repository/userrepositories"
@@ -16,20 +16,20 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitializeUserControllers(db *gorm.DB, validation *validator.Validate) userControllers.UserController {
+func InitializeUserControllers(db *gorm.DB, validation *validator.Validate) usercontrollers.UserController {
 	wire.Build(
 		userrepositories.NewUserRepository,
 		userservices.NewUserService,
-		userControllers.NewUserController,
+		usercontrollers.NewUserController,
 	)
 	return nil
 }
 
-func InitializeTaskControllers(db *gorm.DB, validation *validator.Validate) taskControllers.TaskController {
+func InitializeTaskControllers(db *gorm.DB, validation *validator.Validate) taskcontrollers.TaskController {
 	wire.Build(
 		taskrepositories.NewTaskRepository,
 		tagrepositories.NewTagRepository,
 		taskservices.NewTaskService,
-		taskControllers.NewTaskController)
+		taskcontrollers.NewTaskController)
 	return nil
 }
