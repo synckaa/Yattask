@@ -21,12 +21,12 @@ type TaskControlerImpl struct {
 }
 
 func NewTaskController(service taskservices.TaskService) TaskController {
-	return TaskControlerImpl{
+	return &TaskControlerImpl{
 		service: service,
 	}
 }
 
-func (t TaskControlerImpl) Create(c *gin.Context) {
+func (t *TaskControlerImpl) Create(c *gin.Context) {
 	var task dto.TaskWebCreateRequest
 	err := c.ShouldBind(&task)
 	if err != nil {
@@ -56,7 +56,7 @@ func (t TaskControlerImpl) Create(c *gin.Context) {
 
 }
 
-func (t TaskControlerImpl) Update(c *gin.Context) {
+func (t *TaskControlerImpl) Update(c *gin.Context) {
 	var task dto.TaskWebUpdateRequest
 	err := c.ShouldBind(&task)
 	if err != nil {
@@ -88,7 +88,7 @@ func (t TaskControlerImpl) Update(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func (t TaskControlerImpl) Delete(c *gin.Context) {
+func (t *TaskControlerImpl) Delete(c *gin.Context) {
 	user, _ := c.Get("user")
 	userId := user.(entities.User).ID
 	taskIdStr := c.Param("id")
@@ -107,7 +107,7 @@ func (t TaskControlerImpl) Delete(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func (t TaskControlerImpl) CreateWithAI(c *gin.Context) {
+func (t *TaskControlerImpl) CreateWithAI(c *gin.Context) {
 	var userReq dto.TaskWebCreateRequestWithAI
 	err := c.ShouldBind(&userReq)
 	if err != nil {

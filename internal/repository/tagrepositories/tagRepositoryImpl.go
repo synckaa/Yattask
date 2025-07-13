@@ -63,7 +63,7 @@ func (t *TagRepositoryImpl) Delete(ctx context.Context, tx *gorm.DB, userId uint
 }
 
 func (t *TagRepositoryImpl) Update(ctx context.Context, tx *gorm.DB, task entities.Task, tags []entities.Tag) error {
-	err := tx.Model(&task).Association("Tags").Replace(tags)
+	err := tx.Model(&task).WithContext(ctx).Association("Tags").Replace(tags)
 	if err != nil {
 		return err
 	}

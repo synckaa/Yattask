@@ -29,7 +29,7 @@ func NewUserService(db *gorm.DB, userRepository userrepositories.UserRepository,
 	}
 }
 
-func (u UserServiceImpl) Register(ctx context.Context, user dto.UserRegisterRequest) (dto.UserServiceResponse, error) {
+func (u *UserServiceImpl) Register(ctx context.Context, user dto.UserRegisterRequest) (dto.UserServiceResponse, error) {
 	err := u.Validator.Struct(user)
 	if err != nil {
 		return dto.UserServiceResponse{}, err
@@ -60,7 +60,7 @@ func (u UserServiceImpl) Register(ctx context.Context, user dto.UserRegisterRequ
 
 }
 
-func (u UserServiceImpl) Login(ctx context.Context, user dto.UserLoginRequest) (string, error) {
+func (u *UserServiceImpl) Login(ctx context.Context, user dto.UserLoginRequest) (string, error) {
 	err := u.Validator.Struct(user)
 	if err != nil {
 		return "", errors.New("invalid login request")
@@ -97,7 +97,7 @@ func (u UserServiceImpl) Login(ctx context.Context, user dto.UserLoginRequest) (
 	return tokenString, nil
 }
 
-func (u UserServiceImpl) GetProfileWithTaskAndTag(ctx context.Context, userID uint) (dto.UserServiceResponseGETWithTaskTag, error) {
+func (u *UserServiceImpl) GetProfileWithTaskAndTag(ctx context.Context, userID uint) (dto.UserServiceResponseGETWithTaskTag, error) {
 	var user entities.User
 	errTx := u.DB.Transaction(func(tx *gorm.DB) error {
 		getedUser, err := u.UserRepository.GetByIdWithTaskAndTag(ctx, tx, userID)

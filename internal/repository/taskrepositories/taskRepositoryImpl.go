@@ -14,7 +14,7 @@ func NewTaskRepository() TaskRepository {
 	return &TaskRepositoryImpl{}
 }
 
-func (t TaskRepositoryImpl) Create(ctx context.Context, tx *gorm.DB, task entities.Task) (entities.Task, error) {
+func (t *TaskRepositoryImpl) Create(ctx context.Context, tx *gorm.DB, task entities.Task) (entities.Task, error) {
 	err := tx.WithContext(ctx).Create(&task).Error
 	if err != nil {
 		return entities.Task{}, err
@@ -28,7 +28,7 @@ func (t TaskRepositoryImpl) Create(ctx context.Context, tx *gorm.DB, task entiti
 	return createdTask, nil
 }
 
-func (t TaskRepositoryImpl) Update(ctx context.Context, tx *gorm.DB, task entities.Task) (entities.Task, error) {
+func (t *TaskRepositoryImpl) Update(ctx context.Context, tx *gorm.DB, task entities.Task) (entities.Task, error) {
 	err := tx.WithContext(ctx).Save(&task).Error
 	if err != nil {
 		return entities.Task{}, err
@@ -38,7 +38,7 @@ func (t TaskRepositoryImpl) Update(ctx context.Context, tx *gorm.DB, task entiti
 	return updatedTask, nil
 }
 
-func (t TaskRepositoryImpl) Delete(ctx context.Context, tx *gorm.DB, taskId uint, userId uint) error {
+func (t *TaskRepositoryImpl) Delete(ctx context.Context, tx *gorm.DB, taskId uint, userId uint) error {
 
 	result := tx.WithContext(ctx).Where("id = ? AND user_id = ?", taskId, userId).Unscoped().Delete(&entities.Task{})
 	if result.RowsAffected == 0 {
@@ -50,7 +50,7 @@ func (t TaskRepositoryImpl) Delete(ctx context.Context, tx *gorm.DB, taskId uint
 	return nil
 }
 
-func (t TaskRepositoryImpl) GetById(ctx context.Context, tx *gorm.DB, taskId uint, userId uint) (entities.Task, error) {
+func (t *TaskRepositoryImpl) GetById(ctx context.Context, tx *gorm.DB, taskId uint, userId uint) (entities.Task, error) {
 	var task entities.Task
 	err := tx.WithContext(ctx).Where("id = ? AND user_id = ?", taskId, userId).Take(&task).Error
 	if err != nil {
@@ -59,7 +59,7 @@ func (t TaskRepositoryImpl) GetById(ctx context.Context, tx *gorm.DB, taskId uin
 	return task, nil
 }
 
-func (t TaskRepositoryImpl) GetByIdWithTags(ctx context.Context, tx *gorm.DB, taskId uint, userId uint) (entities.Task, error) {
+func (t *TaskRepositoryImpl) GetByIdWithTags(ctx context.Context, tx *gorm.DB, taskId uint, userId uint) (entities.Task, error) {
 	var task entities.Task
 	err := tx.WithContext(ctx).Preload("Tags").Where("id = ? AND user_id = ?", taskId, userId).Take(&task).Error
 	if err != nil {

@@ -19,7 +19,7 @@ func NewUserController(service userservices.UserService) UserController {
 	}
 }
 
-func (u UserControllerImpl) Register(c *gin.Context) {
+func (u *UserControllerImpl) Register(c *gin.Context) {
 	var userReq dto.UserRegisterRequest
 	err := c.ShouldBindJSON(&userReq)
 	if err != nil {
@@ -38,7 +38,7 @@ func (u UserControllerImpl) Register(c *gin.Context) {
 
 }
 
-func (u UserControllerImpl) Login(c *gin.Context) {
+func (u *UserControllerImpl) Login(c *gin.Context) {
 	tokenValidate, _ := c.Cookie("token")
 	if tokenValidate != "" {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "You are Logged In"})
@@ -65,7 +65,7 @@ func (u UserControllerImpl) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func (u UserControllerImpl) GetProfile(c *gin.Context) {
+func (u *UserControllerImpl) GetProfile(c *gin.Context) {
 	loginedUser, _ := c.MustGet("user").(entities.User)
 	user, err := u.Service.GetProfileWithTaskAndTag(c.Request.Context(), loginedUser.ID)
 	if err != nil {
@@ -79,7 +79,7 @@ func (u UserControllerImpl) GetProfile(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func (u UserControllerImpl) Logout(c *gin.Context) {
+func (u *UserControllerImpl) Logout(c *gin.Context) {
 	c.SetCookie("token", "", -1, "/", "", false, true)
 	c.JSON(http.StatusOK, gin.H{"message": "successfully logged out"})
 

@@ -27,7 +27,7 @@ func NewTaskService(db *gorm.DB, repo taskrepositories.TaskRepository, tagRepo t
 	}
 }
 
-func (t TaskServiceImpl) Create(ctx context.Context, task dto.TaskCreateRequest) (dto.TaskServiceResponse, error) {
+func (t *TaskServiceImpl) Create(ctx context.Context, task dto.TaskCreateRequest) (dto.TaskServiceResponse, error) {
 	err := t.Validate.Struct(task)
 	if err != nil {
 		return dto.TaskServiceResponse{}, err
@@ -69,7 +69,7 @@ func (t TaskServiceImpl) Create(ctx context.Context, task dto.TaskCreateRequest)
 	return helper.ToTaskServiceResponse(taskResp), nil
 }
 
-func (t TaskServiceImpl) Update(ctx context.Context, task dto.TaskUpdateRequest) (dto.TaskServiceResponse, error) {
+func (t *TaskServiceImpl) Update(ctx context.Context, task dto.TaskUpdateRequest) (dto.TaskServiceResponse, error) {
 	err := t.Validate.Struct(task)
 	if err != nil {
 		return dto.TaskServiceResponse{}, err
@@ -118,7 +118,7 @@ func (t TaskServiceImpl) Update(ctx context.Context, task dto.TaskUpdateRequest)
 
 }
 
-func (t TaskServiceImpl) Delete(ctx context.Context, taskID uint, userId uint) error {
+func (t *TaskServiceImpl) Delete(ctx context.Context, taskID uint, userId uint) error {
 	errTx := t.DB.Transaction(func(tx *gorm.DB) error {
 		err := t.Repo.Delete(ctx, tx, taskID, userId)
 		if err != nil {
