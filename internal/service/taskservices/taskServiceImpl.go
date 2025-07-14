@@ -135,3 +135,19 @@ func (t *TaskServiceImpl) Delete(ctx context.Context, taskID uint, userId uint) 
 	}
 	return nil
 }
+
+func (t *TaskServiceImpl) GetByIdWithTags(ctx context.Context, id uint, userId uint) (dto.TaskServiceResponse, error) {
+	var taskResp entities.Task
+	errTx := t.DB.Transaction(func(tx *gorm.DB) error {
+		GetTask, err := t.Repo.GetByIdWithTags(ctx, tx, id, userId)
+		if err != nil {
+			return err
+		}
+		taskResp = GetTask
+		return nil
+	})
+	if errTx != nil {
+		return dto.TaskServiceResponse{}, errTx
+	}
+	return helper.ToTaskServiceResponse(taskResp), nil
+}

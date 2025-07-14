@@ -176,3 +176,21 @@ Contoh:
 	c.JSON(http.StatusCreated, response)
 
 }
+
+func (t *TaskControllerImpl) GetByIDWithTask(c *gin.Context) {
+	taskIdStr := c.Param("id")
+	taskIdU64, _ := strconv.ParseUint(taskIdStr, 10, 64)
+	taskId := uint(taskIdU64)
+	user, _ := c.Get("user")
+	userId := user.(entities.User).ID
+	task, err := t.service.GetByIdWithTags(c.Request.Context(), taskId, userId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "failed to get"})
+	}
+	response := common.WebStandardResponse{
+		Code:    http.StatusOK,
+		Status:  "get task",
+		Message: task,
+	}
+	c.JSON(http.StatusOK, response)
+}

@@ -15,6 +15,7 @@ func AllRoutes(userController usercontrollers.UserController, taskController tas
 	api.POST("/ai/tasks", taskController.CreateWithAI)
 	api.PUT("/tasks/:id", taskController.Update)
 	api.DELETE("/tasks/:id", taskController.Delete)
+	api.GET("/tasks/:id", taskController.GetByIDWithTask)
 
 	auth := r.Group("/api/auth")
 	auth.POST("/register", userController.Register)

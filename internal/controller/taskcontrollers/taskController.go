@@ -7,4 +7,5 @@ type TaskController interface {
 	Update(c *gin.Context)
 	Delete(c *gin.Context)
 	CreateWithAI(c *gin.Context)
+	GetByIDWithTask(c *gin.Context)
 }
